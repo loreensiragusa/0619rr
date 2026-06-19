@@ -1,0 +1,963 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polymarket | The Largest Prediction Market</title>
+    <meta name="description" content="Polymarket is the world's largest prediction market platform covering politics, sports, crypto, esports, finance and more. Trade on future events using blockchain technology.">
+    <meta name="keywords" content="Polymarket,prediction market,blockchain,cryptocurrency,political predictions,sports predictions,esports predictions,finance predictions,decentralized prediction platform">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <style>
+        :root {
+            --bg-base: #0e1114;
+            --bg-panel: #1a1e23;
+            --bg-hover: #23282e;
+            --bg-card: #15181c;
+            --text-primary: #ffffff;
+            --text-secondary: #8b949e;
+            --text-muted: #5e6b7a;
+            --border-color: #2d3138;
+            --accent-blue: #2563eb;
+            --accent-blue-hover: #1d4ed8;
+            --color-yes: #27ce82;
+            --color-yes-bg: rgba(39, 206, 130, 0.15);
+            --color-no: #e13b4d;
+            --color-no-bg: rgba(225, 59, 77, 0.15);
+            --color-al: #ff4d4f;
+            --color-lgd: #1890ff;
+            --nav-height: 60px;
+            --subnav-height: 48px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            line-height: 1.5;
+            overflow-x: hidden;
+            font-size: 14px;
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        .text-sm { font-size: 12px; }
+        .text-xs { font-size: 11px; }
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+        .text-secondary { color: var(--text-secondary); }
+        .text-yes { color: var(--color-yes); }
+        .text-no { color: var(--color-no); }
+
+        .header { position: sticky; top: 0; background-color: var(--bg-base); z-index: 100; border-bottom: 1px solid var(--border-color); }
+        .navbar { display: flex; align-items: center; justify-content: space-between; height: var(--nav-height); padding: 0 24px; }
+        .nav-left { display: flex; align-items: center; gap: 24px; flex: 1; }
+        .logo { font-size: 18px; font-weight: bold; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .search-container { position: relative; width: 100%; max-width: 360px; }
+        .search-bar { width: 100%; background-color: var(--bg-panel); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 6px; padding: 8px 16px 8px 36px; font-size: 13px; outline: none; }
+        .nav-right { display: flex; align-items: center; gap: 16px; }
+        .btn-text { color: var(--accent-blue); background: none; border: none; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+        .btn-outline { background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 6px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .btn-primary { background-color: var(--accent-blue); border: none; color: white; padding: 6px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+
+        .subnav { display: flex; align-items: center; justify-content: center; gap: 20px; height: var(--subnav-height); padding: 0 24px; font-size: 13px; color: var(--text-secondary); overflow-x: auto; white-space: nowrap; }
+        .subnav-item { cursor: pointer; transition: color 0.2s; }
+        .subnav-item:hover { color: var(--text-primary); }
+        .subnav-item.active { color: var(--text-primary); font-weight: 600; }
+        .subnav-divider { color: var(--border-color); }
+
+        .layout-container { max-width: 1600px; margin: 0 auto; padding: 24px; display: grid; grid-template-columns: 1fr 320px; gap: 24px; }
+
+        .hero-section { background-color: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; }
+        .hero-top { display: flex; padding: 24px; gap: 24px; border-bottom: 1px solid var(--border-color); }
+        
+        .hero-info { flex: 1; display: flex; flex-direction: column; max-width: 380px; }
+        .hero-breadcrumb { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+        .hero-title { font-size: 24px; font-weight: 700; line-height: 1.2; margin-bottom: 24px; }
+        
+        .team-buttons { display: flex; gap: 12px; margin-bottom: 20px; }
+        .team-btn { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-base); font-weight: 600; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .team-btn.al { color: var(--text-primary); border-color: rgba(255, 77, 79, 0.5); background-color: rgba(255, 77, 79, 0.1); }
+        .team-btn.lgd { color: var(--text-primary); border-color: rgba(24, 144, 255, 0.5); background-color: rgba(24, 144, 255, 0.1); }
+
+        .hero-chart-area { flex: 2; position: relative; min-height: 280px; }
+        .chart-teams { display: flex; justify-content: space-between; margin-bottom: 16px; }
+        .team-stat { display: flex; flex-direction: column; align-items: center; }
+        .team-logo-placeholder { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-base); margin-bottom: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        
+        .chart-svg-container { position: relative; height: 220px; width: 100%; border-bottom: 1px solid var(--border-color); }
+        .chart-svg { width: 100%; height: 100%; }
+        .axis-labels { position: absolute; right: 0; top: 0; height: 100%; display: flex; flex-direction: column; justify-content: space-between; font-size: 11px; color: var(--text-secondary); pointer-events: none; }
+
+        .hero-footer { padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--text-secondary); background: var(--bg-base); }
+        .comments-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 8px; scrollbar-width: thin; max-height: 200px; }
+        .comments-list::-webkit-scrollbar { width: 4px; }
+        .comments-list::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 2px; }
+        .comment-item { display: flex; gap: 10px; }
+        .comment-avatar { width: 18px; height: 18px; border-radius: 50%; background: var(--text-muted); flex-shrink: 0; }
+        .comment-content { flex: 1; min-width: 0; }
+        .comment-username { font-size: 11px; font-weight: 600; margin-bottom: 2px; }
+        .comment-text { font-size: 11px; color: var(--text-secondary); line-height: 1.4; word-break: break-word; }
+
+        .sidebar { display: flex; flex-direction: column; gap: 24px; }
+        .widget { background: transparent; }
+        .widget-header { font-size: 16px; font-weight: 700; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .widget-list { display: flex; flex-direction: column; }
+        
+        .news-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
+        .news-item:last-child { border-bottom: none; }
+        .news-num { color: var(--text-muted); font-size: 13px; }
+        .news-title { flex: 1; font-size: 13px; line-height: 1.4; }
+        .news-stats { text-align: right; }
+        .news-percent { font-weight: 700; font-size: 14px; }
+        
+        .topic-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border-color); font-size: 13px; cursor: pointer; }
+        .topic-item:hover { background: var(--bg-panel); }
+        
+        .btn-full-width { width: 100%; padding: 12px; border: 1px solid var(--border-color); background: var(--bg-panel); color: var(--text-primary); border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+
+        .markets-section { grid-column: 1 / -1; margin-top: 16px; }
+        .markets-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .markets-title { font-size: 18px; font-weight: 700; }
+        
+        .filter-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 16px; scrollbar-width: none; }
+        .filter-scroll::-webkit-scrollbar { display: none; }
+        .filter-tab { padding: 6px 12px; border-radius: 16px; background: transparent; border: 1px solid transparent; color: var(--text-secondary); font-size: 13px; white-space: nowrap; cursor: pointer; }
+        .filter-tab.active { background: var(--accent-blue); color: white; }
+        .filter-tab:hover:not(.active) { background: var(--bg-panel); border-color: var(--border-color); }
+
+        .grid-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        
+        .card { background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; transition: border-color 0.2s; }
+        .card:hover { border-color: var(--text-muted); }
+        .card-header { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 16px; min-height: 40px; }
+        .card-icon { width: 24px; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+        .card-title { font-size: 13px; font-weight: 600; line-height: 1.4; flex: 1; }
+        
+        .card-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12px; }
+        .card-row:last-of-type { margin-bottom: 0; }
+        
+        .trade-btns { display: flex; gap: 6px; margin-top: auto; padding-top: 12px; }
+        .btn-sm { flex: 1; padding: 6px; border-radius: 4px; font-size: 12px; font-weight: 600; text-align: center; border: 1px solid transparent; cursor: pointer; }
+        .btn-yes-sm { background: var(--color-yes-bg); color: var(--color-yes); border-color: rgba(39,206,130,0.2); cursor: pointer; transition: all 0.2s; }
+        .btn-yes-sm:hover { background: var(--color-yes); color: white; }
+        .btn-no-sm { background: var(--color-no-bg); color: var(--color-no); border-color: rgba(225,59,77,0.2); cursor: pointer; transition: all 0.2s; }
+        .btn-no-sm:hover { background: var(--color-no); color: white; }
+
+        .circle-progress { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--color-yes); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 11px; color: var(--text-secondary); }
+
+        .footer { border-top: 1px solid var(--border-color); background-color: #090a0c; padding: 48px 24px 24px; margin-top: 48px; }
+        .footer-content { max-width: 1600px; margin: 0 auto; display: grid; grid-template-columns: 250px repeat(4, 1fr); gap: 32px; }
+        .footer-logo { font-size: 24px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .footer-tagline { color: var(--text-secondary); font-size: 13px; margin-bottom: 24px; }
+        .footer-col h4 { font-size: 13px; font-weight: 600; margin-bottom: 16px; color: var(--text-primary); }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+        .footer-col a { color: var(--text-secondary); text-decoration: none; font-size: 13px; transition: color 0.2s; }
+        .footer-col a:hover { color: var(--text-primary); }
+        
+        .footer-bottom { max-width: 1600px; margin: 32px auto 0; padding-top: 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-secondary); }
+        .social-icons { display: flex; gap: 16px; font-size: 16px; }
+
+        @media (max-width: 1200px) {
+            .grid-container { grid-template-columns: repeat(3, 1fr); }
+            .layout-container { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 900px) {
+            .grid-container { grid-template-columns: repeat(2, 1fr); }
+            .hero-top { flex-direction: column; }
+            .footer-content { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 600px) {
+            .grid-container { grid-template-columns: 1fr; }
+            .footer-content { grid-template-columns: 1fr; }
+        }
+
+        /* Auth Overlay */
+        #auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999999;
+        }
+
+        #auth-dialog {
+            background-color: #ffffff;
+            border-radius: 20px;
+            padding: 40px 30px;
+            width: 90%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        .auth-lock-icon {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 64px;
+            height: 64px;
+            background-color: #eff6ff;
+            border-radius: 50%;
+            margin-bottom: 24px;
+        }
+
+        #auth-dialog h2 {
+            margin: 0 0 12px 0;
+            font-size: 22px;
+            color: #111827;
+            font-weight: 700;
+        }
+
+        #auth-dialog p {
+            margin: 0 0 32px 0;
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        .auth-btn-group {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .auth-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 0;
+            border-radius: 100px;
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+
+        .auth-btn__icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background-color: #ffffff;
+            border-radius: 50%;
+        }
+
+        .auth-note {
+            font-size: 13px;
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-left">
+                <div class="logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                    Polymarket
+                </div>
+                <div class="search-container">
+                    <input type="text" class="search-bar" placeholder="Search polymarkets...">
+                </div>
+                <button class="btn-text">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                    How it works
+                </button>
+            </div>
+            <div class="nav-right">
+                <button class="btn-outline">Login</button>
+                <button class="btn-primary">Register</button>
+                <a href="/index.html" class="globe-icon" style="padding: 6px 10px; text-decoration: none;">🌐</a>
+            </div>
+        </nav>
+        <div class="subnav">
+            <div class="subnav-item font-semibold" style="color: var(--text-primary);">📈 Popular</div>
+            <div class="subnav-item">Breaking</div>
+            <div class="subnav-item">Latest</div>
+            <div class="subnav-divider">|</div>
+            <div class="subnav-item">Politics</div>
+            <div class="subnav-item">Sports</div>
+            <div class="subnav-item">Crypto</div>
+            <div class="subnav-item">Esports</div>
+            <div class="subnav-item">Iran</div>
+            <div class="subnav-item">Finance</div>
+            <div class="subnav-item">Geopolitics</div>
+            <div class="subnav-item">Tech</div>
+            <div class="subnav-item">Culture</div>
+            <div class="subnav-item">Economy</div>
+            <div class="subnav-item">Weather</div>
+            <div class="subnav-item">Mentions</div>
+            <div class="subnav-item">Elections</div>
+            <div class="subnav-item">More ⌄</div>
+        </div>
+    </header>
+
+    <main class="layout-container">
+        
+        <!-- Left Area: Hero + Grid -->
+        <div style="display: flex; flex-direction: column; min-width: 0;">
+            
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <div class="hero-top">
+                    <!-- Match Info -->
+                    <div class="hero-info">
+                        <div class="hero-breadcrumb">Esports · League of Legends</div>
+                        <h1 class="hero-title">Anyone's Legend vs. LGD Gaming</h1>
+                        
+                        <div class="team-buttons">
+                            <button class="team-btn al">Anyone's Legend</button>
+                            <button class="team-btn lgd">LGD Gaming</button>
+                        </div>
+
+                        <div class="comments-list" id="comments-list">
+                            <div class="comment-item">
+                                <div class="comment-avatar" style="background: #e1bee7;"></div>
+                                <div class="comment-content">
+                                    <div class="comment-username">Coynnn</div>
+                                    <div class="comment-text">Where is the game between RNG and UP? Haven't seen it on the schedule yet</div>
+                                </div>
+                            </div>
+                            <div class="comment-item">
+                                <div class="comment-avatar" style="background: #c5cae9;"></div>
+                                <div class="comment-content">
+                                    <div class="comment-username">TUMURUTUMURURU</div>
+                                    <div class="comment-text">This is the best product but the reviews are off. Please fix before activity shrinks</div>
+                                </div>
+                            </div>
+                            <div class="comment-item">
+                                <div class="comment-avatar" style="background: #ffcc80;"></div>
+                                <div class="comment-content">
+                                    <div class="comment-username">taomaxx</div>
+                                    <div class="comment-text">what the fuck is this market? i cant even exit or see my position</div>
+                                </div>
+                            </div>
+                            <div class="comment-item">
+                                <div class="comment-avatar" style="background: #b2dfdb;"></div>
+                                <div class="comment-content">
+                                    <div class="comment-username">capitulo</div>
+                                    <div class="comment-text">Pool Friday Series please! Need more tournaments like that</div>
+                                </div>
+                            </div>
+                            <div class="comment-item">
+                                <div class="comment-avatar" style="background: #ffab91;"></div>
+                                <div class="comment-content">
+                                    <div class="comment-username">SoloQKing</div>
+                                    <div class="comment-text">When will they fix the UI? It's been broken for weeks now</div>
+                                </div>
+                            </div>
+                            <div class="comment-item">
+                                <div class="comment-avatar" style="background: #ce93d8;"></div>
+                                <div class="comment-content">
+                                    <div class="comment-username">BettingPro_24</div>
+                                    <div class="comment-text">Great odds on AL winning this series. Locked in my position at 87%</div>
+                                </div>
+                            </div>
+                            <div class="comment-item">
+                                <div class="comment-avatar" style="background: #a5d6a7;"></div>
+                                <div class="comment-content">
+                                    <div class="comment-username">EsportsAnalyst</div>
+                                    <div class="comment-text">LGD needs to step up their game if they want to compete in playoffs</div>
+                                </div>
+                            </div>
+                            <div class="comment-item">
+                                <div class="comment-avatar" style="background: #90caf9;"></div>
+                                <div class="comment-content">
+                                    <div class="comment-username">CryptoGambler_</div>
+                                    <div class="comment-text">Put $100 on Anyone's Legend, let's go! GLHF to both teams</div>
+                                </div>
+                            </div>
+                            <div class="comment-item">
+                                <div class="comment-avatar" style="background: #ffcdd2;"></div>
+                                <div class="comment-content">
+                                    <div class="comment-username">LeagueFan88</div>
+                                    <div class="comment-text">Watching this game live. AL looking strong so far!</div>
+                                </div>
+                            </div>
+                            <div class="comment-item">
+                                <div class="comment-avatar" style="background: #e8eaf6;"></div>
+                                <div class="comment-content">
+                                    <div class="comment-username">SmartGambler</div>
+                                    <div class="comment-text">Remember to hedge your bets! Don't go all in on one team</div>
+                                </div>
+                            </div>
+                            <div class="comment-item">
+                                <div class="comment-avatar" style="background: #dcedc8;"></div>
+                                <div class="comment-content">
+                                    <div class="comment-username">BettingNewbie</div>
+                                    <div class="comment-text">First time betting on Polymarket. Any tips for beginners?</div>
+                                </div>
+                            </div>
+                            <div class="comment-item">
+                                <div class="comment-avatar" style="background: #ffe0b2;"></div>
+                                <div class="comment-content">
+                                    <div class="comment-username">ProGamer420</div>
+                                    <div class="comment-text">The odds shifted 5% in the last hour. Market is reacting to something</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chart Area -->
+                    <div class="hero-chart-area">
+                        <div class="chart-teams">
+                            <div class="team-stat">
+                                <div class="team-logo-placeholder"><span style="color:var(--color-al);">🐼</span></div>
+                                <span class="text-xs font-bold">Anyone's Legend</span>
+                            </div>
+                            <div class="team-stat">
+                                <div class="text-sm font-bold">2 : 00</div>
+                                <div class="text-xs text-secondary">Jun 5</div>
+                            </div>
+                            <div class="team-stat">
+                                <div class="team-logo-placeholder"><span style="color:var(--color-lgd);">🐉</span></div>
+                                <span class="text-xs font-bold">LGD Gaming</span>
+                            </div>
+                        </div>
+
+                        <div class="chart-svg-container">
+                            <svg class="chart-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                <path d="M0,20 L30,20 L30,18 L50,18 L50,15 L80,15 L80,13 L100,13" fill="none" stroke="var(--color-al)" stroke-width="1.5" />
+                                <circle cx="100" cy="13" r="2" fill="var(--color-al)" />
+                                <path d="M0,80 L30,80 L30,82 L50,82 L50,85 L80,85 L80,86 L100,86" fill="none" stroke="var(--color-lgd)" stroke-width="1.5" />
+                                <circle cx="100" cy="86" r="2" fill="var(--color-lgd)" />
+                            </svg>
+                            <div class="axis-labels">
+                                <span>100%</span><span>75%</span><span>50%</span><span>25%</span><span>0%</span>
+                            </div>
+                            <div style="position: absolute; right: 40px; top: 5px; text-align: right;">
+                                <div style="color: var(--color-al); font-weight: 700; font-size: 20px;">87%</div>
+                            </div>
+                            <div style="position: absolute; right: 40px; bottom: 10px; text-align: right;">
+                                <div style="color: var(--color-lgd); font-weight: 700; font-size: 20px;">14%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-footer">
+                    <span>$409K Volume</span>
+                    <span style="display: flex; gap: 8px;">
+                        <button class="btn-outline text-xs" id="prev-event">‹ NBA Champion</button>
+                        <button class="btn-outline text-xs" id="next-event">Peace Deal ›</button>
+                    </span>
+                </div>
+            </section>
+
+            <!-- Markets Grid -->
+            <section class="markets-section">
+                <div class="markets-header">
+                    <h2 class="markets-title">All Markets</h2>
+                    <div style="display: flex; gap: 12px; color: var(--text-secondary); cursor: pointer;">
+                        <span>🔍</span><span>⚙️</span><span>🔖</span>
+                    </div>
+                </div>
+                
+                <div class="filter-scroll" id="tabs-container">
+                    <div class="filter-tab active">All</div>
+                    <div class="filter-tab">Politics</div>
+                    <div class="filter-tab">Sports</div>
+                    <div class="filter-tab">Crypto</div>
+                    <div class="filter-tab">Esports</div>
+                    <div class="filter-tab">Iran</div>
+                    <div class="filter-tab">Finance</div>
+                    <div class="filter-tab">Geopolitics</div>
+                </div>
+
+                <div class="grid-container" id="grid-container">
+                    <!-- Cards will be rendered by JS -->
+                </div>
+
+                <button class="btn-full-width">Explore All</button>
+            </section>
+        </div>
+
+        <!-- Right Sidebar -->
+        <aside class="sidebar">
+            <!-- Breaking News -->
+            <div class="widget">
+                <div class="widget-header">Breaking News <span>›</span></div>
+                <div class="widget-list" id="breaking-news-list">
+                    <div class="news-item">
+                        <div class="news-num">1</div>
+                        <div class="news-title">Will Mira Andreeva win the 2026 French Open?</div>
+                        <div class="news-stats">
+                            <div class="news-percent">78%</div>
+                            <div class="text-xs text-yes">↗ 47%</div>
+                        </div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-num">2</div>
+                        <div class="news-title">GPT-5.6 released by June 15, 2026?</div>
+                        <div class="news-stats">
+                            <div class="news-percent">23%</div>
+                            <div class="text-xs text-no">↘ 27%</div>
+                        </div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-num">3</div>
+                        <div class="news-title">Will Nithya Raman finish second in the first round of the 2026 Los Angeles mayoral election?</div>
+                        <div class="news-stats">
+                            <div class="news-percent">83%</div>
+                            <div class="text-xs text-yes">↗ 19%</div>
+                        </div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-num">4</div>
+                        <div class="news-title">Bitcoin above $150,000 by end of June 2026?</div>
+                        <div class="news-stats">
+                            <div class="news-percent">34%</div>
+                            <div class="text-xs text-no">↘ 12%</div>
+                        </div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-num">5</div>
+                        <div class="news-title">Fed rate cut before September 2026?</div>
+                        <div class="news-stats">
+                            <div class="news-percent">89%</div>
+                            <div class="text-xs text-yes">↗ 5%</div>
+                        </div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-num">6</div>
+                        <div class="news-title">SpaceX Starship reaches Mars by 2027?</div>
+                        <div class="news-stats">
+                            <div class="news-percent">42%</div>
+                            <div class="text-xs text-yes">↗ 8%</div>
+                        </div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-num">7</div>
+                        <div class="news-title">Elon Musk announces Tesla Robotaxi launch date</div>
+                        <div class="news-stats">
+                            <div class="news-percent">67%</div>
+                            <div class="text-xs text-yes">↗ 15%</div>
+                        </div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-num">8</div>
+                        <div class="news-title">NBA Finals 2026: Knicks vs Thunder?</div>
+                        <div class="news-stats">
+                            <div class="news-percent">51%</div>
+                            <div class="text-xs text-yes">↗ 23%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hot Topics -->
+            <div class="widget">
+                <div class="widget-header">Hot Topics <span>›</span></div>
+                <div class="widget-list" id="hot-topics-list">
+                    <div class="topic-item"><div><span class="news-num" style="margin-right:8px;">1</span> Peru</div><div class="text-secondary">$103M Today 🔥 ›</div></div>
+                    <div class="topic-item"><div><span class="news-num" style="margin-right:8px;">2</span> Maine</div><div class="text-secondary">$468K Today 🔥 ›</div></div>
+                    <div class="topic-item"><div><span class="news-num" style="margin-right:8px;">3</span> SpaceX</div><div class="text-secondary">$2M Today 🔥 ›</div></div>
+                    <div class="topic-item"><div><span class="news-num" style="margin-right:8px;">4</span> France</div><div class="text-secondary">$102M Today 🔥 ›</div></div>
+                    <div class="topic-item"><div><span class="news-num" style="margin-right:8px;">5</span> Spain</div><div class="text-secondary">$100M Today 🔥 ›</div></div>
+                    <div class="topic-item"><div><span class="news-num" style="margin-right:8px;">6</span> OpenAI</div><div class="text-secondary">$89M Today 🔥 ›</div></div>
+                    <div class="topic-item"><div><span class="news-num" style="margin-right:8px;">7</span> NBA Playoffs</div><div class="text-secondary">$56M Today 🔥 ›</div></div>
+                    <div class="topic-item"><div><span class="news-num" style="margin-right:8px;">8</span> Fed Rate</div><div class="text-secondary">$45M Today 🔥 ›</div></div>
+                    <div class="topic-item"><div><span class="news-num" style="margin-right:8px;">9</span> Iran Nuclear</div><div class="text-secondary">$32M Today 🔥 ›</div></div>
+                    <div class="topic-item"><div><span class="news-num" style="margin-right:8px;">10</span> Crypto</div><div class="text-secondary">$28M Today 🔥 ›</div></div>
+                    <div class="topic-item"><div><span class="news-num" style="margin-right:8px;">11</span> Elections</div><div class="text-secondary">$21M Today 🔥 ›</div></div>
+                    <div class="topic-item"><div><span class="news-num" style="margin-right:8px;">12</span> Anthropic</div><div class="text-secondary">$18M Today 🔥 ›</div></div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                    Polymarket
+                </div>
+                <p class="footer-tagline">The world's largest prediction market</p>
+                <div class="social-icons">
+                    <span>𝕏</span>
+                    <span>📘</span>
+                    <span>💬</span>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Markets</h4>
+                <ul>
+                    <li><a href="#">Politics<br><span class="text-xs text-secondary">Predictions & Odds</span></a></li>
+                    <li><a href="#">Sports<br><span class="text-xs text-secondary">Predictions & Odds</span></a></li>
+                    <li><a href="#">Crypto<br><span class="text-xs text-secondary">Predictions & Odds</span></a></li>
+                    <li><a href="#">Esports<br><span class="text-xs text-secondary">Predictions & Odds</span></a></li>
+                    <li><a href="#">Show more ⌄</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4 style="color: transparent;">Spacer</h4>
+                <ul>
+                    <li><a href="#">Starmer<br><span class="text-xs text-secondary">Predictions & Odds</span></a></li>
+                    <li><a href="#">Asia<br><span class="text-xs text-secondary">Predictions & Odds</span></a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4 style="color: transparent;">Spacer</h4>
+                <ul>
+                    <li><a href="#">Americas Elections<br><span class="text-xs text-secondary">Predictions & Odds</span></a></li>
+                    <li><a href="#">GTA VI<br><span class="text-xs text-secondary">Predictions & Odds</span></a></li>
+                    <li><a href="#">Oil<br><span class="text-xs text-secondary">Predictions & Odds</span></a></li>
+                    <li><a href="#">Fed<br><span class="text-xs text-secondary">Predictions & Odds</span></a></li>
+                    <li><a href="#">AI<br><span class="text-xs text-secondary">Predictions & Odds</span></a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4 style="color: transparent;">Spacer</h4>
+                <ul>
+                    <li><a href="#">Turkey<br><span class="text-xs text-secondary">Predictions & Odds</span></a></li>
+                    <li><a href="#">Daily Temperature<br><span class="text-xs text-secondary">Predictions & Odds</span></a></li>
+                    <li><a href="#">Revenue<br><span class="text-xs text-secondary">Predictions & Odds</span></a></li>
+                    <li><a href="#">Global Elections<br><span class="text-xs text-secondary">Predictions & Odds</span></a></li>
+                    <li><a href="#">Show more ⌄</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col" style="display: flex; gap: 40px;">
+                <div>
+                    <h4>Support & Community</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Community Guidelines</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <span>© 2024 Polymarket. All rights reserved.</span>
+            <span>Powered by Polygon</span>
+        </div>
+    </footer>
+
+    <script>
+        // Tab filtering
+        const tabsContainer = document.getElementById('tabs-container');
+        const gridContainer = document.getElementById('grid-container');
+        
+        const gridData = [
+            { icon: "🇺🇸", bg: "#fff", color: "#000", title: "US-Iran Permanent Peace Agreement by...?", type: "standard", category: "iran", rows: [{l: "Dec 31", v: "72%"}, {l: "Oct 31", v: "63%"}], vol: "$250M" },
+            { icon: "₿", bg: "#f7931a", color: "#fff", title: "Bitcoin up or down 5m", type: "crypto", category: "crypto", pct: "51%", dir: "Up", vol: "$1M" },
+            { icon: "🌍", bg: "#fff", color: "#000", title: "World Cup Winner", type: "standard", category: "fifa", rows: [{l: "Spain", v: "16%"}, {l: "France", v: "16%"}], vol: "$2B" },
+            { type: "esports", title: "CS2 · 10:00 PM", category: "esports", t1: "Liquid", v1: "63%", c1: "#000", t2: "FlyQuest", v2: "38%", c2: "#27ce82", vol: "$250K" },
+            
+            { icon: "🏛️", bg: "#fff", color: "#000", title: "If not Trump and Biden elected...", type: "standard", category: "politics", rows: [{l: "YES", v: "21%", circle: true}], vol: "$42K" },
+            { icon: "🗳️", bg: "#fff", color: "#000", title: "California Governor Recall Winner", type: "standard", category: "politics", rows: [{l: "Gavin Newsom", v: "72%"}, {l: "Republican", v: "22%"}], vol: "$24M" },
+            { icon: "🌆", bg: "#fff", color: "#000", title: "Los Angeles Mayor Election", type: "standard", category: "politics", rows: [{l: "Democrat", v: "66%"}, {l: "Republican", v: "30%"}], vol: "$850K" },
+            { icon: "🇨🇴", bg: "#fff", color: "#000", title: "Colombia Presidential Election", type: "standard", category: "politics", rows: [{l: "Gustavo Petro", v: "81%"}, {l: "Federico Gutiérrez", v: "18%"}], vol: "$24M" },
+
+            { icon: "A", bg: "#000", color: "#fff", title: "Anthropic IPO by ...?", type: "standard", category: "tech", rows: [{l: "Dec 31, 2026", v: "89%"}, {l: "Oct 31, 2026", v: "65%"}], vol: "$122K" },
+            { icon: "📉", bg: "#fff", color: "#000", title: "Fed next rate cut will be...", type: "standard", category: "finance", rows: [{l: "Sep 20", v: "84%"}, {l: "Jun 15", v: "65%"}], vol: "$65M" },
+            { icon: "🎾", bg: "#fff", color: "#000", title: "Will Mira Andreeva win 2026 French Open?", type: "standard", category: "sports", rows: [{l: "Jul 31", v: "70%"}, {l: "Jun 30", v: "53%"}], vol: "$20M" },
+            { icon: "🧠", bg: "#fff", color: "#000", title: "Claude 5/6 release ...?", type: "standard", category: "tech", rows: [{l: "Jul 31", v: "69%"}, {l: "Jun 30", v: "45%"}], vol: "$18M" },
+
+            { icon: "🏀", bg: "#000", color: "#fff", title: "2026 NBA Champion", type: "standard", category: "sports", rows: [{l: "New York Knicks", v: "53%"}, {l: "San Antonio Spurs", v: "47%"}], vol: "$411M" },
+            { icon: "🚀", bg: "#000", color: "#fff", title: "SpaceX IPO pricing over...?", type: "standard", category: "tech", rows: [{l: "> $100B", v: "90%"}, {l: "> $150B", v: "93%"}], vol: "$30M" },
+            { icon: "🦅", bg: "#fff", color: "#000", title: "After Biden doesn't run, Democrats...", type: "standard", category: "politics", rows: [{l: "YES", v: "18%", circle: true}], vol: "$32M" },
+            { icon: "🐻", bg: "#fff", color: "#000", title: "If Gavin Newsom doesn't run...", type: "standard", category: "politics", rows: [{l: "Oct 31", v: "38%"}, {l: "Jul 31", v: "18%"}], vol: "$8M" },
+
+            { icon: "💻", bg: "#fff", color: "#000", title: "AI passes Turing test in 2026?", type: "standard", category: "tech", rows: [{l: "Dec 31", v: "71%"}, {l: "Oct 31, 2026", v: "33%"}], vol: "$12M" },
+            { icon: "🤖", bg: "#fff", color: "#000", title: "OpenAI IPO valuation ...?", type: "standard", category: "tech", rows: [{l: "> $200B", v: "71%"}, {l: "> $250B", v: "33%"}], vol: "$18M" },
+            { icon: "🎮", bg: "#000", color: "#fff", title: "GTA VI released in 2026...?", type: "standard", category: "culture", rows: [{l: "Dec 31", v: "88%"}, {l: "Oct 31", v: "12%"}], vol: "$45M" },
+            { icon: "🕊️", bg: "#fff", color: "#000", title: "Russia-Ukraine ceasefire by...", type: "standard", category: "geopolitics", rows: [{l: "Jul 31", v: "61%"}, {l: "Jun 30", v: "40%"}], vol: "$32M" },
+            
+            { icon: "🇱🇧", bg: "#fff", color: "#000", title: "Lebanon ceasefire reached", type: "standard", category: "geopolitics", rows: [{l: "Jul 15", v: "55%"}, {l: "Aug 1", v: "42%"}], vol: "$15M" },
+            { icon: "🇨🇺", bg: "#fff", color: "#000", title: "Cuba elections new leader", type: "standard", category: "politics", rows: [{l: "YES", v: "67%", circle: true}], vol: "$5M" },
+            { icon: "🏈", bg: "#fff", color: "#000", title: "Super Bowl 2027 Champion", type: "standard", category: "sports", rows: [{l: "Chiefs", v: "35%"}, {l: "49ers", v: "28%"}], vol: "$88M" },
+            { icon: "🌊", bg: "#fff", color: "#000", title: "Hurricane season US landfalls", type: "standard", category: "weather", rows: [{l: "≥5", v: "45%"}, {l: "≥7", v: "23%"}], vol: "$12M" },
+            { icon: "📊", bg: "#fff", color: "#000", title: "US CPI inflation below 3%", type: "standard", category: "finance", rows: [{l: "Jun", v: "58%"}, {l: "Sep", v: "71%"}], vol: "$45M" },
+            { icon: "⚽", bg: "#fff", color: "#000", title: "World Cup final matchup", type: "standard", category: "sports", rows: [{l: "Argentina vs Brazil", v: "22%"}, {l: "France vs England", v: "18%"}], vol: "$55M" }
+        ];
+
+        let currentTab = "All";
+        
+        function renderTabs() {
+            const tabs = ["All", "Politics", "Sports", "Crypto", "Esports", "Iran", "Finance", "Geopolitics"];
+            tabsContainer.innerHTML = tabs.map(tab => 
+                `<div class="filter-tab ${tab === currentTab ? 'active' : ''}" data-category="${tab.toLowerCase()}">${tab}</div>`
+            ).join('');
+            
+            tabsContainer.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    currentTab = tab.textContent;
+                    renderTabs();
+                    renderGrid();
+                });
+            });
+        }
+        
+        function renderGrid() {
+            const categoryMapReverse = {
+                "all": "all",
+                "politics": "politics",
+                "sports": "sports", 
+                "crypto": "crypto",
+                "esports": "esports",
+                "iran": "iran",
+                "finance": "finance",
+                "geopolitics": "geopolitics"
+            };
+            
+            const filteredData = currentTab === "All" 
+                ? gridData 
+                : gridData.filter(item => item.category === categoryMapReverse[currentTab.toLowerCase()]);
+            
+            gridContainer.innerHTML = filteredData.map(item => {
+                let content = '';
+                
+                if (item.type === 'standard') {
+                    const rowsHTML = item.rows.map(r => {
+                        if(r.circle) {
+                            return `
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                    <div class="circle-progress">${r.v}</div>
+                                    <div class="trade-btns" style="margin:0; width:60%; padding:0;"><div class="btn-sm btn-yes-sm">YES</div><div class="btn-sm btn-no-sm">NO</div></div>
+                                </div>
+                            `;
+                        }
+                        return `
+                            <div class="card-row">
+                                <span>${r.l}</span>
+                                <div style="display:flex; gap:6px; align-items:center;">
+                                    <span class="font-semibold">${r.v}</span>
+                                    <div class="btn-yes-sm" style="padding:2px 6px; border-radius:4px;">YES</div>
+                                    <div class="btn-no-sm" style="padding:2px 6px; border-radius:4px;">NO</div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    content = `
+                        <div class="card-header">
+                            <div class="card-icon" style="background:${item.bg}; color:${item.color};">${item.icon}</div>
+                            <div class="card-title">${item.title}</div>
+                            <div class="circle-progress">${item.pct || ''}<br><span style="font-size:8px; font-weight:normal;">${item.dir || ''}</span></div>
+                        </div>
+                        ${rowsHTML}
+                    `;
+                }
+                else if (item.type === 'crypto') {
+                    content = `
+                        <div class="card-header">
+                            <div class="card-icon" style="background:${item.bg}; color:${item.color};">${item.icon}</div>
+                            <div class="card-title">${item.title}</div>
+                            <div class="circle-progress">${item.pct}<br><span style="font-size:8px; font-weight:normal;">${item.dir}</span></div>
+                        </div>
+                        <div class="trade-btns">
+                            <div class="btn-sm btn-yes-sm">Up</div>
+                            <div class="btn-sm btn-no-sm">Down</div>
+                        </div>
+                    `;
+                }
+                else if (item.type === 'esports') {
+                    content = `
+                        <div style="font-size:11px; color:var(--text-secondary); margin-bottom:12px; display:flex; justify-content:space-between;">
+                            <span style="display:flex; gap:4px; align-items:center;">
+                                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='${encodeURIComponent(item.c1)}'/></svg>" width="12" height="12">
+                                ${item.t1}
+                            </span>
+                            <span class="font-bold text-sm" style="color:var(--text-primary);">${item.v1}</span>
+                        </div>
+                        <div style="font-size:11px; color:var(--text-secondary); margin-bottom:12px; display:flex; justify-content:space-between;">
+                            <span style="display:flex; gap:4px; align-items:center;">
+                                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='${encodeURIComponent(item.c2)}'/></svg>" width="12" height="12">
+                                ${item.t2}
+                            </span>
+                            <span class="font-bold text-sm" style="color:var(--text-primary);">${item.v2}</span>
+                        </div>
+                        <div class="trade-btns">
+                            <div class="btn-sm" style="background:rgba(255,255,255,0.05); color:var(--text-secondary);">${item.t1}</div>
+                            <div class="btn-sm" style="background:rgba(39,206,130,0.1); color:var(--color-yes); border:1px solid rgba(39,206,130,0.3);">${item.t2}</div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="card">
+                        ${content}
+                        <div class="card-footer">
+                            <span>${item.vol} Volume</span>
+                            <span style="display:flex; gap:8px;"><span>💬</span><span>🔖</span></span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Initialize
+        renderTabs();
+        renderGrid();
+        
+        // Auto-scroll comments
+        const commentsList = document.getElementById('comments-list');
+        let scrollInterval;
+        
+        function startAutoScroll() {
+            scrollInterval = setInterval(() => {
+                if (commentsList) {
+                    commentsList.scrollTop += 1;
+                    if (commentsList.scrollTop >= commentsList.scrollHeight - commentsList.clientHeight) {
+                        commentsList.scrollTop = 0;
+                    }
+                }
+            }, 50);
+        }
+        
+        if (commentsList) {
+            startAutoScroll();
+            commentsList.addEventListener('mouseenter', () => clearInterval(scrollInterval));
+            commentsList.addEventListener('mouseleave', startAutoScroll);
+        }
+        
+        // Event switching
+        const events = [
+            {
+                breadcrumb: "Esports · League of Legends",
+                title: "Anyone's Legend vs. LGD Gaming",
+                team1: "Anyone's Legend",
+                team2: "LGD Gaming",
+                team1Emoji: "🐼",
+                team2Emoji: "🐉",
+                team1Color: "var(--color-al)",
+                team2Color: "var(--color-lgd)",
+                team1Percent: "87%",
+                team2Percent: "14%",
+                time: "2 : 00",
+                date: "Jun 5",
+                volume: "$409K",
+                prevLabel: "‹ Knicks vs Spurs",
+                nextLabel: "Iran Deal ›"
+            },
+            {
+                breadcrumb: "Sports · NBA",
+                title: "Knicks vs Spurs",
+                team1: "New York Knicks",
+                team2: "San Antonio Spurs",
+                team1Emoji: "🏀",
+                team2Emoji: "🤠",
+                team1Color: "var(--color-yes)",
+                team2Color: "var(--color-no)",
+                team1Percent: "55%",
+                team2Percent: "45%",
+                time: "Q3 2026",
+                date: "Ongoing",
+                volume: "$250M",
+                prevLabel: "‹ NBA Champion",
+                nextLabel: "Trump Indictment ›"
+            },
+            {
+                breadcrumb: "Politics · Geopolitics",
+                title: "Iran Nuclear Deal",
+                team1: "Yes",
+                team2: "No",
+                team1Emoji: "☢️",
+                team2Emoji: "🇮🇷",
+                team1Color: "var(--color-yes)",
+                team2Color: "var(--color-no)",
+                team1Percent: "55%",
+                team2Percent: "45%",
+                time: "Q3 2026",
+                date: "Ongoing",
+                volume: "$250M",
+                prevLabel: "‹ Knicks vs Spurs",
+                nextLabel: "Trump Indictment ›"
+            },
+            {
+                breadcrumb: "Politics · USA",
+                title: "Trump Indictment",
+                team1: "Yes",
+                team2: "No",
+                team1Emoji: "⚖️",
+                team2Emoji: "🇺🇸",
+                team1Color: "var(--color-no)",
+                team2Color: "#E8B82D",
+                team1Percent: "78%",
+                team2Percent: "22%",
+                time: "Jun 2026",
+                date: "Pending",
+                volume: "$180M",
+                prevLabel: "‹ Iran Deal",
+                nextLabel: "SpaceX IPO ›"
+            }
+        ];
+        
+        let currentEventIndex = 0;
+        
+        function updateEvent(event) {
+            document.querySelector('.hero-breadcrumb').textContent = event.breadcrumb;
+            document.querySelector('.hero-title').textContent = event.title;
+            document.querySelector('.team-btn.al').textContent = event.team1;
+            document.querySelector('.team-btn.lgd').textContent = event.team2;
+            document.querySelector('.chart-teams .team-stat:nth-child(1) .team-logo-placeholder span').textContent = event.team1Emoji;
+            document.querySelector('.chart-teams .team-stat:nth-child(1) .text-xs').textContent = event.team1;
+            document.querySelector('.chart-teams .team-stat:nth-child(3) .team-logo-placeholder span').textContent = event.team2Emoji;
+            document.querySelector('.chart-teams .team-stat:nth-child(3) .text-xs').textContent = event.team2;
+            document.querySelector('.chart-teams .team-stat:nth-child(2) .text-sm').textContent = event.time;
+            document.querySelector('.chart-teams .team-stat:nth-child(2) .text-xs.text-secondary').textContent = event.date;
+            document.querySelector('.hero-footer span:first-child').textContent = event.volume + ' Volume';
+            document.getElementById('prev-event').textContent = event.prevLabel;
+            document.getElementById('next-event').textContent = event.nextLabel;
+            
+            const svg = document.querySelector('.chart-svg');
+            svg.innerHTML = `
+                <path d="M0,20 L30,20 L30,18 L50,18 L50,15 L80,15 L80,13 L100,13" fill="none" stroke="${event.team1Color}" stroke-width="1.5" />
+                <circle cx="100" cy="13" r="2" fill="${event.team1Color}" />
+                <path d="M0,80 L30,80 L30,82 L50,82 L50,85 L80,85 L80,86 L100,86" fill="none" stroke="${event.team2Color}" stroke-width="1.5" />
+                <circle cx="100" cy="86" r="2" fill="${event.team2Color}" />
+            `;
+        }
+        
+        document.getElementById('prev-event').addEventListener('click', () => {
+            currentEventIndex = (currentEventIndex - 1 + events.length) % events.length;
+            updateEvent(events[currentEventIndex]);
+        });
+        
+        document.getElementById('next-event').addEventListener('click', () => {
+            currentEventIndex = (currentEventIndex + 1) % events.length;
+            updateEvent(events[currentEventIndex]);
+        });
+    </script>
+
+
+</body>
+</html>
