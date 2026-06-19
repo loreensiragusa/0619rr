@@ -2,4 +2,4 @@ User-agent: *
 Disallow: /admin/
 Disallow: /tmp/
 
-Sitemap: https://pawstolove.xyz/sitemap.xml
+Sitemap: https://sunflowerofwestchester.online/sitemap.xml
